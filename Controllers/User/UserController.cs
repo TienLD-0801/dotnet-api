@@ -1,11 +1,16 @@
+using dotnet_app.Services.User;
 using Microsoft.AspNetCore.Mvc;
+using User.Models;
 
-namespace User.Controllers
+namespace dotnet_app.Controllers.User
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    [Route("api/user")]
+    public class UserController(IUserService userService) : ControllerBase
+
+
     {
+        private readonly IUserService _userService = userService;
 
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -24,10 +29,15 @@ namespace User.Controllers
 
         // POST: api/user
         [HttpPost]
-        public ActionResult Post([FromBody] string value)
+        public ActionResult<UserEntity> Post([FromBody] UserEntity value)
         {
-            // TODO: Implement logic to create a new user
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(errors);
+            }
+            var user = _userService.CreateUser(value);
+            return Ok(user);
         }
 
 

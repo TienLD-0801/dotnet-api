@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Global.Controllers
+namespace dotnet_app.Controllers.Global
 {
     [ApiController]
     [Route("/")]
