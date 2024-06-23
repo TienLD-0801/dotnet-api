@@ -1,4 +1,5 @@
 using dotnet_app.Services.User;
+using dotnet_app.Shared;
 using Microsoft.AspNetCore.Mvc;
 using User.Models;
 
@@ -29,12 +30,12 @@ namespace dotnet_app.Controllers.User
 
         // POST: api/user
         [HttpPost]
-        public ActionResult<UserEntity> Post([FromBody] UserEntity value)
+        public IActionResult Post([FromBody] UserEntity value)
         {
-            if (!ModelState.IsValid)
+            var error = CustomError.CustomErrorResponse(this.ControllerContext);
+            if (error != null)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                return BadRequest(errors);
+                return error;
             }
             var user = _userService.CreateUser(value);
             return Ok(user);

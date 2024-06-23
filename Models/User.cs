@@ -8,10 +8,10 @@ namespace User.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
-        [StringLength(10)]
+        [StringLength(10, ErrorMessage = "Name is invalid length")]
         public required string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Email is required")]
         [StringLength(200)]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public required string Email { get; set; }

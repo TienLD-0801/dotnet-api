@@ -1,4 +1,5 @@
 using dotnet_app.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_app.Shared
@@ -12,15 +13,20 @@ namespace dotnet_app.Shared
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // setupDB
             var connectionString =
             builder.Configuration.GetConnectionString("PostgresDB") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
             builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
-            ServiceRegistration.RegisterServices(builder.Services);
+            builder.Services.Configure(options => options. = actionContext =>
+            {
+                return CustomErrorResponse(actionContext);
+            })
 
+            //Register services
+             ServiceRegistration.RegisterServices(builder.Services);
         }
 
         private static WebApplication Build(WebApplicationBuilder builder)
@@ -58,8 +64,6 @@ namespace dotnet_app.Shared
             }
 
 
-            app.UseHttpsRedirection();
-
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
@@ -68,7 +72,7 @@ namespace dotnet_app.Shared
 
             app.MapControllers();
 
-            app.Run();
+            app.Run(url: "http://localhost:4000");
         }
 
     }
